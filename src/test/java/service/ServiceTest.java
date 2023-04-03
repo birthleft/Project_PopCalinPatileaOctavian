@@ -21,11 +21,12 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
 public class ServiceTest {
 
     private Service service;
+
     @Before
     public void setUp() {
         try {
@@ -109,6 +110,7 @@ public class ServiceTest {
         assertEquals(student, 1);
         assertEquals(initialLen + 1, finalLen);
     }
+
     @Test
     public void saveStudentIdIsLowerBoundMinusOne() {
         var initialLen = service.findAllStudents().spliterator().getExactSizeIfKnown();
