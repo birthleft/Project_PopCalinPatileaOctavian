@@ -3,11 +3,9 @@ package service;
 import domain.Nota;
 import domain.Student;
 import domain.Tema;
+import org.junit.After;
 import org.junit.Before;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.w3c.dom.DOMImplementation;
 import repository.NotaXMLRepository;
 import repository.StudentXMLRepository;
@@ -25,11 +23,11 @@ import javax.xml.transform.stream.StreamResult;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ServiceTest {
+public class ServiceTest {
 
     private Service service;
-    @BeforeEach
-    void setUp() {
+    @Before
+    public void setUp() {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -57,14 +55,14 @@ class ServiceTest {
         service = new Service(fileRepository1, fileRepository2, fileRepository3);
     }
 
-    @AfterEach
-    void tearDown() {
+    @After
+    public void tearDown() {
         java.io.File file = new java.io.File("students_test.xml");
         file.delete();
     }
 
     @Test
-    void saveStudentIdEmpty() {
+    public void saveStudentIdEmpty() {
         var initialLen = service.findAllStudents().spliterator().getExactSizeIfKnown();
         assertThrows(ValidationException.class, () -> {
             service.saveStudent("", "Calin e smecher", 935);
@@ -74,7 +72,7 @@ class ServiceTest {
     }
 
     @Test
-    void saveStudentIdNotNumerical() {
+    public void saveStudentIdNotNumerical() {
         var initialLen = service.findAllStudents().spliterator().getExactSizeIfKnown();
         assertThrows(ValidationException.class, () -> {
             service.saveStudent("42069a", "Calin e smecher", 935);
@@ -84,7 +82,7 @@ class ServiceTest {
     }
 
     @Test
-    void saveStudentNameEmpty() {
+    public void saveStudentNameEmpty() {
         var initialLen = service.findAllStudents().spliterator().getExactSizeIfKnown();
         assertThrows(ValidationException.class, () -> {
             service.saveStudent("42070", "", 935);
@@ -94,7 +92,7 @@ class ServiceTest {
     }
 
     @Test
-    void saveStudentIdIsLowerBoundGroupIsLowerBound() {
+    public void saveStudentIdIsLowerBoundGroupIsLowerBound() {
         var initialLen = service.findAllStudents().spliterator().getExactSizeIfKnown();
         var student = service.saveStudent("1", "Calin e smecher", 100);
         var finalLen = service.findAllStudents().spliterator().getExactSizeIfKnown();
@@ -104,7 +102,7 @@ class ServiceTest {
 
 
     @Test
-    void saveStudentIdIsUpperBoundGroupIsUpperBound() {
+    public void saveStudentIdIsUpperBoundGroupIsUpperBound() {
         var initialLen = service.findAllStudents().spliterator().getExactSizeIfKnown();
         var student = service.saveStudent(Integer.toString(Integer.MAX_VALUE), "Calin e smecher", 999);
         var finalLen = service.findAllStudents().spliterator().getExactSizeIfKnown();
@@ -112,7 +110,7 @@ class ServiceTest {
         assertEquals(initialLen + 1, finalLen);
     }
     @Test
-    void saveStudentIdIsLowerBoundMinusOne() {
+    public void saveStudentIdIsLowerBoundMinusOne() {
         var initialLen = service.findAllStudents().spliterator().getExactSizeIfKnown();
         assertThrows(ValidationException.class, () -> {
             service.saveStudent("0", "Calin e smecher", 935);
@@ -122,7 +120,7 @@ class ServiceTest {
     }
 
     @Test
-    void saveStudentIdIsLowerBoundPlusOneGroupIsLowerBoundPlusOne() {
+    public void saveStudentIdIsLowerBoundPlusOneGroupIsLowerBoundPlusOne() {
         var initialLen = service.findAllStudents().spliterator().getExactSizeIfKnown();
         var student = service.saveStudent("2", "Calin e smecher", 101);
         var finalLen = service.findAllStudents().spliterator().getExactSizeIfKnown();
@@ -131,7 +129,7 @@ class ServiceTest {
     }
 
     @Test
-    void saveStudentIdIsUpperBoundPlusOne() {
+    public void saveStudentIdIsUpperBoundPlusOne() {
         var initialLen = service.findAllStudents().spliterator().getExactSizeIfKnown();
         assertThrows(ValidationException.class, () -> {
             service.saveStudent(Double.toString((double) Integer.MAX_VALUE + 1), "Calin e smecher", 935);
@@ -141,7 +139,7 @@ class ServiceTest {
     }
 
     @Test
-    void saveStudentIdIsUpperBoundMinusOneGroupIsUpperBoundMinusOne() {
+    public void saveStudentIdIsUpperBoundMinusOneGroupIsUpperBoundMinusOne() {
         var initialLen = service.findAllStudents().spliterator().getExactSizeIfKnown();
         var student = service.saveStudent(Integer.toString(Integer.MAX_VALUE - 1), "Calin e smecher", 999);
         var finalLen = service.findAllStudents().spliterator().getExactSizeIfKnown();
@@ -150,7 +148,7 @@ class ServiceTest {
     }
 
     @Test
-    void saveStudentGroupIsLowerBoundMinusOne() {
+    public void saveStudentGroupIsLowerBoundMinusOne() {
         var initialLen = service.findAllStudents().spliterator().getExactSizeIfKnown();
         assertThrows(ValidationException.class, () -> {
             service.saveStudent("42073", "Calin e smecher", 99);
@@ -160,7 +158,7 @@ class ServiceTest {
     }
 
     @Test
-    void saveStudentGroupIsUpperBoundPlusOne() {
+    public void saveStudentGroupIsUpperBoundPlusOne() {
         var initialLen = service.findAllStudents().spliterator().getExactSizeIfKnown();
         assertThrows(ValidationException.class, () -> {
             service.saveStudent("42074", "Calin e smecher", 1000);
