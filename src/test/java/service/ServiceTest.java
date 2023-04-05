@@ -25,10 +25,30 @@ import static org.junit.Assert.*;
 
 public class ServiceTest {
 
+    private final static String ASSIGNMENT_FILENAME = "assignnments_test.xml";
+    private final static String STUDENT_FILENAME = "students_test.xml";
+    private final static String GRADE_FILENAME = "grades_test.xml";
+
     private Service service;
 
     @Before
     public void setUp() {
+        createXmlFile(ASSIGNMENT_FILENAME);
+        createXmlFile(STUDENT_FILENAME);
+        createXmlFile(GRADE_FILENAME);
+
+        Validator<Student> studentValidator = new StudentValidator();
+        Validator<Tema> temaValidator = new TemaValidator();
+        Validator<Nota> notaValidator = new NotaValidator();
+
+        StudentXMLRepository fileRepository1 = new StudentXMLRepository(studentValidator, STUDENT_FILENAME);
+        TemaXMLRepository fileRepository2 = new TemaXMLRepository(temaValidator, ASSIGNMENT_FILENAME);
+        NotaXMLRepository fileRepository3 = new NotaXMLRepository(notaValidator, GRADE_FILENAME);
+
+        service = new Service(fileRepository1, fileRepository2, fileRepository3);
+    }
+
+    private void createXmlFile(String filename) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -39,26 +59,22 @@ public class ServiceTest {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource source = new DOMSource(document);
-            StreamResult result = new StreamResult(new java.io.File("students_test.xml"));
+            StreamResult result = new StreamResult(new java.io.File(filename));
             transformer.transform(source, result);
         } catch (ParserConfigurationException | TransformerException e) {
             e.printStackTrace();
         }
-
-        Validator<Student> studentValidator = new StudentValidator();
-        Validator<Tema> temaValidator = new TemaValidator();
-        Validator<Nota> notaValidator = new NotaValidator();
-
-        StudentXMLRepository fileRepository1 = new StudentXMLRepository(studentValidator, "students_test.xml");
-        TemaXMLRepository fileRepository2 = new TemaXMLRepository(temaValidator, "teme.xml");
-        NotaXMLRepository fileRepository3 = new NotaXMLRepository(notaValidator, "note.xml");
-
-        service = new Service(fileRepository1, fileRepository2, fileRepository3);
     }
 
     @After
     public void tearDown() {
-        java.io.File file = new java.io.File("students_test.xml");
+        deleteFile(ASSIGNMENT_FILENAME);
+        deleteFile(STUDENT_FILENAME);
+        deleteFile(GRADE_FILENAME);
+    }
+
+    private void deleteFile(String filename) {
+        java.io.File file = new java.io.File(filename);
         file.delete();
     }
 
@@ -168,4 +184,34 @@ public class ServiceTest {
         var finalLen = service.findAllStudents().spliterator().getExactSizeIfKnown();
         assertEquals(initialLen, finalLen);
     }
-}
+
+        @Test
+    public void saveAssignmentSuccessfully() {
+        String id = "1";
+        String description = "description";
+        int deadline = 1;
+        int startline = 1;
+        long initialSize = service.findAllTeme().spliterator().getExactSizeIfKnown();
+        int result = service.saveTema(id, description, deadline, startline);
+        long finalSize = service.findAllTeme().spliterator().getExactSizeIfKnown();
+        assertEquals(1, result);
+        assertEquals(initialSize + 1, finalSize);
+    }
+
+    @Test
+    public void saveAssignmentDuplicate() {
+        String id = "1";
+        String description = "description";
+        int deadline = 1;
+        int startline = 1;
+        service.saveTema(id, description, deadline, startline);
+        long initialSize = service.findAllTeme().spliterator().getExactSizeIfKnown();
+
+        String description2 = "description2";
+        int deadline2 = 2;
+        int startline2 = 2;
+        int result = service.saveTema(id, description2, deadline2, startline2);
+        long finalSize = service.findAllTeme().spliterator().getExactSizeIfKnown();
+        assertEquals(0, result);
+        assertEquals(initialSize, finalSize);
+    }}
