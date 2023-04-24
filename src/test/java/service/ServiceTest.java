@@ -185,11 +185,71 @@ public class ServiceTest {
         assertEquals(initialLen, finalLen);
     }
 
-        @Test
-    public void saveAssignmentSuccessfully() {
-        String id = "1";
-        String description = "description";
+    @Test
+    public void saveAssignmentEmptyId() {
+        String id = "";
+        String description = "desc";
         int deadline = 1;
+        int startline = 2;
+        long initialSize = service.findAllTeme().spliterator().getExactSizeIfKnown();
+        assertThrows(
+                ValidationException.class,
+                () -> service.saveTema(id, description, deadline, startline)
+        );
+        long finalSize = service.findAllTeme().spliterator().getExactSizeIfKnown();
+        assertEquals(initialSize, finalSize);
+    }
+
+    @Test
+    public void saveAssignmentEmptyDescription() {
+        String id = "69";
+        String description = "";
+        int deadline = 1;
+        int startline = 2;
+        long initialSize = service.findAllTeme().spliterator().getExactSizeIfKnown();
+        assertThrows(
+                ValidationException.class,
+                () -> service.saveTema(id, description, deadline, startline)
+        );
+        long finalSize = service.findAllTeme().spliterator().getExactSizeIfKnown();
+        assertEquals(initialSize, finalSize);
+    }
+
+    @Test
+    public void saveAssignmentInvalidDeadline() {
+        String id = "69";
+        String description = "desc";
+        int deadline = 15;
+        int startline = 1;
+        long initialSize = service.findAllTeme().spliterator().getExactSizeIfKnown();
+        assertThrows(
+                ValidationException.class,
+                () -> service.saveTema(id, description, deadline, startline)
+        );
+        long finalSize = service.findAllTeme().spliterator().getExactSizeIfKnown();
+        assertEquals(initialSize, finalSize);
+    }
+
+    @Test
+    public void saveAssignmentInvalidStartline() {
+        String id = "69";
+        String description = "desc";
+        int deadline = 1;
+        int startline = -1;
+        long initialSize = service.findAllTeme().spliterator().getExactSizeIfKnown();
+        assertThrows(
+                ValidationException.class,
+                () -> service.saveTema(id, description, deadline, startline)
+        );
+        long finalSize = service.findAllTeme().spliterator().getExactSizeIfKnown();
+        assertEquals(initialSize, finalSize);
+    }
+
+    @Test
+    public void saveAssignmentSuccessfully() {
+        String id = "69";
+        String description = "descr";
+        int deadline = 2;
         int startline = 1;
         long initialSize = service.findAllTeme().spliterator().getExactSizeIfKnown();
         int result = service.saveTema(id, description, deadline, startline);
@@ -200,18 +260,19 @@ public class ServiceTest {
 
     @Test
     public void saveAssignmentDuplicate() {
-        String id = "1";
-        String description = "description";
+        String id = "69";
+        String description = "desc1";
         int deadline = 1;
         int startline = 1;
         service.saveTema(id, description, deadline, startline);
         long initialSize = service.findAllTeme().spliterator().getExactSizeIfKnown();
 
-        String description2 = "description2";
+        String description2 = "desc";
         int deadline2 = 2;
-        int startline2 = 2;
+        int startline2 = 1;
         int result = service.saveTema(id, description2, deadline2, startline2);
         long finalSize = service.findAllTeme().spliterator().getExactSizeIfKnown();
         assertEquals(0, result);
         assertEquals(initialSize, finalSize);
-    }}
+    }
+}
