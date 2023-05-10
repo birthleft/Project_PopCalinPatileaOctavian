@@ -10,3 +10,9 @@ Predata in saptamana: 9
 Deadline: 8
 Feedback: done
 
+Tema: 4
+Nota: 10.0
+Predata in saptamana: 4
+Deadline: 10
+Feedback: 5
+

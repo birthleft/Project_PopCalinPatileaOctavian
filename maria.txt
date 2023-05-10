@@ -1,0 +1,12 @@
+Tema: 1
+Nota: 9.5
+Predata in saptamana: 6
+Deadline: 7
+Feedback: pofta buna Angelo
+
+Tema: 4
+Nota: 1.0
+Predata in saptamana: 17
+Deadline: 10
+Feedback: g
+

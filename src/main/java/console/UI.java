@@ -2,6 +2,7 @@ package console;
 
 import domain.*;
 import service.Service;
+import validation.ValidationException;
 
 import java.util.Scanner;
 
@@ -226,43 +227,51 @@ public class UI {
         printMenu();
 
         while(cmd != 0) {
-            System.out.println("Introduceti comanda: ");
-            cmd = scanner.nextInt();
+            try {
+                System.out.println("Introduceti comanda: ");
+                cmd = scanner.nextInt();
 
-            switch(cmd) {
-                case 11:
-                    uiPrintAllStudents();
-                    break;
-                case 12:
-                    uiPrintAllTeme();
-                    break;
-                case 13:
-                    uiPrintAllNote();
-                    break;
-                case 21:
-                    uiSaveStudent();
-                    break;
-                case 22:
-                    uiSaveTema();
-                    break;
-                case 23:
-                    uiSaveNota();
-                    break;
-                case 31:
-                    uiDeleteStudent();
-                    break;
-                case 32:
-                    uiDeleteTema();
-                    break;
-                case 4:
-                    uiUpdateStudent();
-                    break;
-                case 5:
-                    uiExtendDeadline();
-                    break;
-                case 0:
-                    cmd = 0;
-                    break;
+                switch (cmd) {
+                    case 11:
+                        uiPrintAllStudents();
+                        break;
+                    case 12:
+                        uiPrintAllTeme();
+                        break;
+                    case 13:
+                        uiPrintAllNote();
+                        break;
+                    case 21:
+                        uiSaveStudent();
+                        break;
+                    case 22:
+                        uiSaveTema();
+                        break;
+                    case 23:
+                        uiSaveNota();
+                        break;
+                    case 31:
+                        uiDeleteStudent();
+                        break;
+                    case 32:
+                        uiDeleteTema();
+                        break;
+                    case 4:
+                        uiUpdateStudent();
+                        break;
+                    case 5:
+                        uiExtendDeadline();
+                        break;
+                    case 0:
+                        cmd = 0;
+                        break;
+                }
+            }
+            catch (ValidationException v) {
+                System.out.println(v.getMessage());
+            }
+            catch (NumberFormatException numberFormatException) {
+                System.out.println("The format given is invalid!");
             }
         }
     }
